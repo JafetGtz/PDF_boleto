@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Imprimir</title>
+    <script src="qr.js"></script>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
+
+</head>
+
+<body> 
+        <input id="text" type="text" value="http://jindo.dev.naver.com/collie" style="width:80%" /><br />
+        <div id="qrcode" style="width:100px; height:100px; margin-top:80px; margin-left:80px;"></div>
+        
+    <div id="demo">
+
+    </div>
+       
+    <p><button id="imprimir">Imprimir</button></p>
+    <p><button id="imprimir2">Imprimir2</button></p>
+
+    <iframe src="" frameborder="0" >
+	<p> prueba </p>
+</iframe>
+
+<div id="output"><p> prueba </p></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+        integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+        crossorigin="anonymous"></script>
+    <script>
+     
+
+     
+//funciones para generar el codigo QR
+ var qrcode = new QRCode(document.getElementById("qrcode"), {
+	width : 100,
+	height : 100
+});
+
+function makeCode () {		
+	//texto del qr
+    var elText = "Yursoldout"
+	var qr = qrcode.makeCode(elText);
+}
+
+makeCode();
+//-----------------------------------------------//
+   
+    var imprimir = document.getElementById("imprimir");
+    var iframe = document.getElementById('output');
+    iframe.src = '';
+    imprimir2.addEventListener('click', () => {
+	var ventana = window.open('', 'PRINT', 'height=400,width=600');
+  	ventana.document.write('<html><head><title>' + document.title + '</title>');
+  	ventana.document.write('</head><body >');
+  	ventana.document.write(elemento.innerHTML);
+  	ventana.document.write('</body></html>');
+  	//ventana.document.close();
+  	ventana.focus();
+  	ventana.print();
+  	ventana.close();
+  	return true;    
+    })
+
+
+
+// Ejemplo de objectos json para generar el pdf
+    var json = [
+        {
+          name: "jafet",
+          "apellido": "Gutierrez",
+          asiento: "A1"
+        },
+        {  
+        name: "jafet",
+        "apellido": "Gutierrez",
+        asiento: "A2"
+        }
+    ]
+        
+         
+     
+
+
+
+        imprimir.addEventListener('click', () => {
+
+            //selecciono el elemento imagen que contiene el src de la imagen
+            var images = document.body.getElementsByTagName("img");
+            //obtengo el src base 64
+            var imageQr = images[0].getAttribute("src");
+             //se crea el PDF
+            var doc = new jsPDF({
+                orientation: 'p',
+                unit: 'mm',
+                format: [214.28,442.85]
+            });
+            
+            doc.setFontSize(7);
+            var tam = 2;
+            //titulo principal
+            doc.text(20,20,'Boleto yursoldout');
+            //Agrego la ruta de la imagen seleccionada previamente
+            doc.addImage(imageQr, 'PNG', 15, 40, 50, 50)
+           
+            //recorre cuantos objetos hay, de esto depende el numero de boletos que se van a crear 
+        
+           json.forEach(element => {
+            doc.addPage();
+            doc.text(20,100,"Nombre: "+element.name)
+            doc.text(20,120,"Apellidos: "+element.apellido)
+            doc.text(20,140,"Numero de asiento: "+element.asiento)
+            doc.addImage(imageQr, 'PNG', 15, 40, 50, 50)
+
+
+           });
+
+
+
+            doc.autoPrint();
+            doc.output('dataurlnewwindow');
+            var iframe = document.getElementById('output');
+            iframe.src = doc.output('datauristring');
+            console.log(iframe.src)
+            // iframe.contentWindow.focus();
+            // iframe.contentWindow.print();
+            var node = document.getElementById("imprimir");
+            node.parentNode.removeChild(node);
+            var cadena = doc.output('datauristring');
+            var pdf = cadena.split(",");
+
+})
+
+
+
+       
+       
+    
+    
+
+
+  
+
+    </script>
+</body>
+
+</html>
